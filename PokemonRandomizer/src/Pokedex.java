@@ -1,6 +1,8 @@
+
 /**
  * Created by Evelyn Moss on 11/17/2016.
  */
+package PokemonTabletopRandomizer.PokemonRandomizer.src;
 import java.util.ArrayList;
 import java.util.HashMap;
 

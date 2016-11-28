@@ -1,3 +1,4 @@
+package PokemonTabletopRandomizer.PokemonRandomizer.src;
 /**
  * Created by Evelyn Moss on 11/17/2016.
  */
