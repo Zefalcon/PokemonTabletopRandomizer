@@ -9,11 +9,14 @@ public class Pokemon {
 	String name;
 	int firstEvolution;
 	int secondEvolution;
+	Rarity rarity;
+	boolean isSpecial = false;
 
-	public Pokemon(String name, int first, int second){
+	public Pokemon(String name, int first, int second, Rarity rare){
 		this.name = name;
 		firstEvolution = first;
 		secondEvolution = second;
+		rarity = rare;
 	}
 
 	public String toString(){
@@ -30,5 +33,25 @@ public class Pokemon {
 		else{
 			return 1;
 		}
+	}
+
+	public Rarity getRarity(){
+		return rarity;
+	}
+
+	public boolean isSpecial(){
+		return isSpecial;
+	}
+
+	public void markSpecial(){
+		isSpecial = true;
+	}
+
+	public String details(int level){
+		StringBuilder b = new StringBuilder();
+		b.append(name + ": ");
+		b.append("Stage " + getStage(level));
+		b.append("Is Special?: " + isSpecial);
+		return b.toString();
 	}
 }

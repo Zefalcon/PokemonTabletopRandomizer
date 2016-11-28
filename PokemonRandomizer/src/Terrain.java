@@ -7,7 +7,23 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public enum Terrain {
 
-	GRASSLAND (6493, new int[]{128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048,
+	//TODO: Finish figuring out numbers
+	GRASSLAND(6493,  new int[]{20, 34, 49, 9,  5, 1, 1}),
+	SCRUBLAND(6694,  new int[]{19, 34, 55, 17, 5, 3, 2}),
+	HILLS(6792,      new int[]{18, 40, 50, 17, 5, 4, 0}),
+	URBAN(4997,      new int[]{16, 23, 42, 8,  0, 1, 1}),
+	DESERT(4914,     new int[]{}),
+	JUNGLE(5882,     new int[]{}),
+	MOUNTAIN(4198,   new int[]{}),
+	FIRE_HILLS(4043, new int[]{}),
+	OASIS(2711,      new int[]{}),
+	COAST(2104,      new int[]{}),
+	COLD(2063,       new int[]{}),
+	RIVER(1824,      new int[]{}),
+	OCEAN(1577,      new int[]{}),
+	ROCKY_COAST(1377,new int[]{});
+
+	/*GRASSLAND (6493, new int[]{128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048,
 			2176, 2304, 2432, 2560, 2624, 2688, 2752, 2816, 2880, 2944, 3008, 3072, 3136, 3200, 3264, 3328, 3392, 3456,
 			3520, 3584, 3648, 3712, 3776, 3840, 3904, 3968, 4032, 4096}),
 	SCRUBLAND (6694, new int[]{128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048,
@@ -54,19 +70,44 @@ public enum Terrain {
 	OCEAN (1577, new int[]{128, 256, 384, 512, 640, 768, 832, 896, 960, 1024, 1088, 1120, 1152, 1184, 1216, 1248, 1280,
 			1312, 1344, 1376, 1408, 1440, 1472, 1488, 1504, 1520, 1536, 1552, 1568, 1576, 1577}),
 	ROCKY_COAST (1377, new int[]{128, 256, 384, 448, 512, 576, 640, 704, 768, 832, 896, 928, 960, 992, 1024, 1056, 1088,
-			1120, 1152, 1184, 1216, 1248, 1280, 1296, 1312, 1328, 1344, 1360, 1368, 1372, 1376, 1377});
+			1120, 1152, 1184, 1216, 1248, 1280, 1296, 1312, 1328, 1344, 1360, 1368, 1372, 1376, 1377});*/
 
-	Terrain(int maxRoll, int[] maxesOfRanges){
-		numPokemon = maxRoll;
-		maxes = maxesOfRanges;
+	Terrain(int maxRoll, int[] numPokemon){
+		this.numPokemon = maxRoll;
+		species = numPokemon;
 	}
 
 	int numPokemon;
-	int[] maxes;
+	int[] species;
 
 	public static Pokemon rollWild(Terrain t){
-		int roll = ThreadLocalRandom.current().nextInt(1, t.numPokemon+1);
-		return Pokedex.getPokemon(t, roll);
+		//Roll out of total encounters
+		int roll = ThreadLocalRandom.current().nextInt(1, t.numPokemon+1); //Inclusive end
+		//Find rarity from roll
+		int before = 0; //Stores number of previously covered Pokemon
+		int i = 0; //Stores index of species array
+		Rarity rarity = Rarity.SuperCommon; //Stores chosen rarity
+		for (Rarity r : Rarity.values()){
+			if(roll <= r.range * t.species[i] + before){
+				//Rarity found, exit
+				rarity = r;
+				break;
+			}
+			before += r.range * t.species[i];
+			i++;
+		}
+		//Roll out of encounters within that rarity
+		roll = ThreadLocalRandom.current().nextInt(1, rarity.range * t.species[i]+1); //Inclusive end
+		//Retrieve Pokemon index
+		int j = 0; //Stores index of Pokemon within rarity
+		for (j=0;j<t.species[i];j++){
+			if(roll <= rarity.range * j){
+				//Pokemon index found, exit.
+				break;
+			}
+		}
+		//Get Pokemon from Pokedex
+		return Pokedex.getPokemon(t, rarity, j);
 	}
 
 }
